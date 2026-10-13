@@ -3,155 +3,147 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>MegaTools | Free AI Background Remover, Image Converter & CV Builder</title>
+    <title>MegaTools | Pure Local Browser Engine Suite</title>
     
-    <meta name="description" content="MegaTools by Droidbill is an open-source, 100% free minimalist web utility suite. Instantly erase image backgrounds, convert photo configurations, generate QR codes, analyze text layouts, and build ATS-friendly resumes securely in your browser.">
-    <meta name="keywords" content="free background remover, online image converter, online qr code generator, free cv maker, ats resume builder, minimalist pomodoro timer, text analyzer, text case changer, droidbill megatools">
+    <!-- Hardened Production SEO Elements -->
+    <meta name="description" content="MegaTools by Droidbill is a 100% free, serverless utility suite running locally inside your browser cache. Format text parameters, lock secure notes, modify photo filters, and build resumes instantly.">
+    <meta name="keywords" content="free text analyzer, online image filters, clear case converter, resume builder local, secure note locker, droidbill megatools">
     <meta name="robots" content="index, follow">
-    <link rel="canonical" href="https://github.io">
 
-    <link href="https://googleapis.com" rel="stylesheet">
-    <script src="https://cloudflare.com"></script>
-    <script src="https://cloudflare.com"></script>
-    <script src="https://jsdelivr.net"></script>
-    <script src="https://cloudflare.com"></script>
-    
     <style>
         :root {
             --primary: #00adb5;
-            --primary-glow: rgba(0, 173, 181, 0.4);
-            --bg-dark: #03050a;
+            --primary-glow: rgba(0, 173, 181, 0.3);
+            --bg-dark: #050814;
             --text-main: #f3f4f6;
             --text-muted: #64748b;
-            --glass: rgba(255, 255, 255, 0.02);
-            --glass-border: rgba(255, 255, 255, 0.04);
-            --input-bg: rgba(255,255,255,0.01);
-            --btn-txt: #000000;
-            --btn-bg: #ffffff;
-            --cv-shadow: rgba(0,0,0,0.5);
+            --card-bg: rgba(255, 255, 255, 0.02);
+            --border: rgba(255, 255, 255, 0.05);
+            --input-bg: rgba(0, 0, 0, 0.2);
         }
 
         [data-theme="light"] {
-            --bg-dark: #f8fafc;
+            --bg-dark: #f1f5f9;
             --text-main: #0f172a;
             --text-muted: #64748b;
-            --glass: rgba(15, 23, 42, 0.03);
-            --glass-border: rgba(15, 23, 42, 0.08);
+            --card-bg: #ffffff;
+            --border: rgba(15, 23, 42, 0.08);
             --input-bg: #ffffff;
-            --btn-txt: #ffffff;
-            --btn-bg: #0f172a;
-            --cv-shadow: rgba(15,23,42,0.15);
         }
 
-        * { box-sizing: border-box; }
+        * { box-sizing: border-box; font-family: sans-serif; transition: background 0.25s, color 0.25s, border-color 0.25s; }
 
-        body, html { 
-            font-family: 'Space Grotesk', sans-serif; 
-            background-color: var(--bg-dark); 
-            color: var(--text-main); 
-            margin: 0; padding: 0;
-            overflow-x: hidden;
-            scroll-behavior: smooth;
-        }
-
-        #canvas3d { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; z-index: 1; pointer-events: none; }
-        .wrapper { position: relative; z-index: 2; max-width: 900px; margin: auto; padding: 40px 20px; }
+        body { background-color: var(--bg-dark); color: var(--text-main); margin: 0; padding: 40px 20px; }
+        .wrapper { max-width: 800px; margin: auto; }
         
-        nav { display: flex; justify-content: space-between; align-items: center; margin-bottom: 60px; padding-bottom: 20px; border-bottom: 1px solid var(--glass-border); }
-        .logo { font-weight: 700; font-size: 1.1rem; letter-spacing: 2px; color: var(--text-main); display: flex; align-items: center; gap: 8px; }
+        nav { display: flex; justify-content: space-between; align-items: center; margin-bottom: 40px; padding-bottom: 20px; border-bottom: 1px solid var(--border); }
+        .logo { font-weight: 700; font-size: 1.2rem; letter-spacing: 1px; color: var(--text-main); }
         .logo span { color: var(--primary); }
 
-        .theme-toggle {
-            background: var(--glass); border: 1px solid var(--glass-border); color: var(--text-main);
-            padding: 10px 16px; border-radius: 30px; cursor: pointer; font-family: inherit; font-size: 0.85rem; font-weight: 600;
-        }
-        .theme-toggle:hover { border-color: var(--primary); }
+        .theme-btn { background: var(--card-bg); border: 1px solid var(--border); color: var(--text-main); padding: 8px 16px; border-radius: 20px; cursor: pointer; font-size: 0.85rem; font-weight: 600; }
+        .theme-btn:hover { border-color: var(--primary); }
 
-        .assistant-box {
-            background: var(--glass); border: 1px solid var(--glass-border); border-radius: 20px; padding: 30px; margin-bottom: 60px;
-            backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px);
-        }
-        .assistant-box h2 { font-size: 1.3rem; font-weight: 500; margin-top: 0; margin-bottom: 15px; }
-        .options-row { display: flex; flex-wrap: wrap; gap: 12px; }
-        
-        .opt-btn {
-            background: var(--glass); border: 1px solid var(--glass-border); color: var(--text-main);
-            padding: 12px 20px; border-radius: 30px; cursor: pointer; font-family: inherit; font-weight: 500; font-size: 0.9rem;
-        }
-        .opt-btn:hover { background: var(--primary); border-color: var(--primary); color: #fff; box-shadow: 0 0 20px var(--primary-glow); transform: translateY(-2px); }
+        .navigator-panel { background: var(--card-bg); border: 1px solid var(--border); border-radius: 16px; padding: 25px; margin-bottom: 40px; }
+        .navigator-panel h2 { font-size: 1.1rem; margin-top: 0; margin-bottom: 15px; font-weight: 600; }
+        .links-row { display: flex; flex-wrap: wrap; gap: 10px; }
+        .nav-link { background: rgba(255,255,255,0.02); border: 1px solid var(--border); color: var(--text-main); padding: 10px 16px; border-radius: 25px; cursor: pointer; font-size: 0.85rem; font-weight: 500; }
+        .nav-link:hover { background: var(--primary); border-color: var(--primary); color: #fff; box-shadow: 0 4px 12px var(--primary-glow); }
 
-        .section-container { margin-bottom: 80px; padding: 25px; border-radius: 16px; border: 1px solid var(--glass-border); background: var(--glass); backdrop-filter: blur(5px); }
-        .section-container.highlight { border-color: var(--primary); box-shadow: 0 0 20px var(--primary-glow); }
+        .module-box { background: var(--card-bg); border: 1px solid var(--border); border-radius: 16px; padding: 30px; margin-bottom: 50px; }
+        .module-title { font-size: 1.3rem; font-weight: 600; margin-bottom: 5px; color: #fff; }
+        [data-theme="light"] .module-title { color: #0f172a; }
+        .module-subtitle { font-size: 0.85rem; color: var(--text-muted); margin-bottom: 20px; }
 
-        .tool-title { font-size: 1.4rem; font-weight: 600; margin-bottom: 5px; }
-        .tool-subtitle { font-size: 0.85rem; color: var(--text-muted); margin-bottom: 25px; font-weight: 300; }
+        textarea, input[type="text"], input[type="number"], select { width: 100%; background: var(--input-bg); color: var(--text-main); border: 1px solid var(--border); border-radius: 8px; padding: 14px; font-size: 0.95rem; margin-bottom: 15px; }
+        textarea:focus, input:focus, select:focus { outline: none; border-color: var(--primary); }
+        input[type="file"] { padding: 12px; background: var(--input-bg); border: 1px dashed var(--border); border-radius: 8px; width: 100%; color: var(--text-muted); margin-bottom: 15px; cursor: pointer; }
 
-        input[type="text"], input[type="number"], textarea, select {
-            width: 100%; background: var(--input-bg); color: var(--text-main);
-            border: 1px solid var(--glass-border); border-radius: 12px;
-            padding: 16px; font-size: 1rem; font-family: inherit; margin-bottom: 20px;
-        }
-        input:focus, textarea:focus, select:focus { outline: none; border-color: var(--primary); }
-        input[type="file"] { padding: 14px; background: var(--input-bg); border: 1px dashed var(--glass-border); border-radius: 12px; cursor: pointer; width: 100%; color: var(--text-muted); margin-bottom: 15px; }
+        button.run-btn { background: #fff; color: #000; border: none; border-radius: 8px; padding: 15px; cursor: pointer; font-weight: 600; font-size: 0.95rem; width: 100%; margin-top: 5px; }
+        button.run-btn:hover { background: var(--primary); color: #fff; box-shadow: 0 5px 15px var(--primary-glow); }
 
-        button.action-btn {
-            background: var(--btn-bg); color: var(--btn-txt); border: none; border-radius: 12px;
-            padding: 16px; cursor: pointer; font-weight: 600; font-size: 1rem; width: 100%; font-family: inherit; margin-top: 10px;
-        }
-        button.action-btn:hover { background: var(--primary); color: #fff; box-shadow: 0 10px 25px var(--primary-glow); }
+        .output-panel { background: rgba(0,0,0,0.15); padding: 14px; border-radius: 8px; margin-top: 15px; border-left: 3px solid var(--primary); font-size: 0.9rem; color: var(--text-muted); text-align: center; word-break: break-all; }
+        img.preview-img { max-width: 100%; max-height: 220px; border-radius: 8px; margin-top: 15px; display: none; }
 
-        .status-node { background: var(--glass); padding: 14px; border-radius: 10px; margin-top: 20px; text-align: center; font-size: 0.9rem; border-left: 3px solid var(--primary); color: var(--text-muted); }
-        img.output-view { max-width: 100%; max-height: 250px; border-radius: 12px; margin-top: 20px; display: none; }
-        #qrcode-view { display: flex; justify-content: center; margin-top: 20px; padding: 15px; background: white; width: 170px; margin-left: auto; margin-right: auto; border-radius: 8px; }
-        .timer-numeric { font-size: 4rem; font-weight: 300; text-align: center; margin: 20px 0; letter-spacing: -2px; }
-
-        #cv-container { background: #ffffff; color: #1a202c; padding: 50px; border-radius: 8px; margin-top: 30px; box-shadow: 0 30px 60px var(--cv-shadow); max-width: 100%; }
-        .cv-identity h1 { font-size: 2.2rem; font-weight: 700; margin: 0; color: #1a202c; letter-spacing: -1px; text-align: left; }
-        .cv-identity .role { font-size: 0.95rem; text-transform: uppercase; color: #00adb5; font-weight: 600; margin-top: 5px; letter-spacing: 1px; }
-        .cv-identity .meta { font-size: 0.85rem; color: #718096; margin-top: 5px; border-bottom: 1px solid #e2e8f0; padding-bottom: 15px; }
-        .cv-block { margin-top: 25px; }
-        .cv-block h4 { font-size: 0.85rem; text-transform: uppercase; letter-spacing: 2px; color: #1a202c; margin: 0 0 8px 0; font-weight: 700; border-bottom: 1px solid #edf2f7; padding-bottom: 4px; text-align: left;}
-        .cv-block p { margin: 0; line-height: 1.6; color: #4a5568; font-size: 0.95rem; white-space: pre-line; text-align: left; }
+        /* Print Optimized CV Output */
+        #cv-sheet { background: #ffffff; color: #1a202c; padding: 40px; border-radius: 4px; margin-top: 25px; box-shadow: 0 10px 30px var(--border); border: 1px solid #e2e8f0; }
+        .cv-identity { border-bottom: 2px solid #2d3748; padding-bottom: 15px; margin-bottom: 20px; }
+        .cv-identity h1 { font-size: 1.8rem; margin: 0; font-weight: 700; color: #1a202c; text-align: left; }
+        .cv-identity .role { font-size: 0.95rem; text-transform: uppercase; color: #00adb5; font-weight: 600; margin-top: 3px; letter-spacing: 0.5px; text-align: left; }
+        .cv-identity .meta { font-size: 0.85rem; color: #718096; margin-top: 4px; text-align: left; }
+        .cv-row { margin-top: 20px; }
+        .cv-row h4 { font-size: 0.85rem; text-transform: uppercase; letter-spacing: 1px; color: #1a202c; margin: 0 0 6px 0; font-weight: 700; border-bottom: 1px solid #edf2f7; padding-bottom: 3px; text-align: left; }
+        .cv-row p { margin: 0; line-height: 1.5; color: #4a5568; font-size: 0.9rem; white-space: pre-line; text-align: left; }
     </style>
 </head>
 <body>
 
-<canvas id="canvas3d"></canvas>
-
 <div class="wrapper">
     <nav>
         <div class="logo">🤖 DROIDBILL <span>// MT</span></div>
-        <button class="theme-toggle" onclick="toggleThemeLayout()">🌓 TOGGLE INTERFACE</button>
+        <button class="theme-btn" onclick="switchThemeMode()">🌓 INTERFACE LAYOUT</button>
     </nav>
 
-    <div class="assistant-box">
-        <h2>What protocol are we executing today?</h2>
-        <div class="options-row">
-            <button class="opt-btn" onclick="routeTo('text-cleaner')">Clean & Analyze Text</button>
-            <button class="opt-btn" onclick="routeTo('crypto-locker')">Encrypt Text Strings</button>
-            <button class="opt-btn" onclick="routeTo('bg-remover')">Erase Photo Background</button>
-            <button class="opt-btn" onclick="routeTo('converter')">Convert Photo Formats</button>
-            <button class="opt-btn" onclick="routeTo('compressor')">Compress Image File Sizes</button>
-            <button class="opt-btn" onclick="routeTo('qr-gen')">Generate URL QR Codes</button>
-            <button class="opt-btn" onclick="routeTo('pomodoro')">Launch Pomodoro Timer</button>
-            <button class="opt-btn" onclick="routeTo('cv-builder')">Build a Minimalist CV</button>
+    <div class="navigator-panel">
+        <h2>Select System Protocol</h2>
+        <div class="links-row">
+            <button class="nav-link" onclick="jumpToModule('text-cleaner')">Clean & Analyze Text</button>
+            <button class="nav-link" onclick="jumpToModule('crypto-box')">Encrypt Notes</button>
+            <button class="nav-link" onclick="jumpToModule('image-studio')">Render Canvas Filters</button>
+            <button class="nav-link" onclick="jumpToModule('converter')">Convert Photo Formats</button>
+            <button class="nav-link" onclick="jumpToModule('cv-builder')">Build Minimalist CV</button>
         </div>
     </div>
 
-    <!-- MODULE 1: TEXT CLEANER -->
-    <div class="section-container" id="text-cleaner">
-        <div class="tool-title">🧹 Text Case Cleaner & Word Analyzer</div>
-        <div class="tool-subtitle">Format capitalization syntax layouts and monitor production word count tracking metrics.</div>
-        <textarea id="analyzerInput" rows="4" placeholder="Paste target layout text elements here..." oninput="analyzeText()"></textarea>
-        <div style="display: flex; gap: 10px; margin-bottom: 15px;">
-            <button class="action-btn" onclick="changeTextCase('upper')" style="margin-top:0;">UPPERCASE</button>
-            <button class="action-btn" onclick="changeTextCase('lower')" style="margin-top:0;">lowercase</button>
+    <!-- MODULE 1: TEXT ENGINE -->
+    <div class="module-box" id="text-cleaner">
+        <div class="module-title">🧹 Text Case Cleaner & Analyzer</div>
+        <div class="module-subtitle">Parse layout syntax tracking word strings and length values locally.</div>
+        <textarea id="textInput" rows="4" placeholder="Paste structural text elements here..." oninput="processTextData()"></textarea>
+        <div style="display: flex; gap: 10px;">
+            <button class="run-btn" onclick="transformText('upper')" style="margin-top:0;">UPPERCASE</button>
+            <button class="run-btn" onclick="transformText('lower')" style="margin-top:0;">lowercase</button>
         </div>
-        <div class="status-node" id="analyzerStatus">Words: 0 | Characters: 0 | Est. Reading Time: 0s</div>
+        <div class="output-panel" id="textStatus">Words: 0 | Characters: 0 | Reading Time: 0s</div>
     </div>
 
     <!-- MODULE 2: CRYPTO LOCKER -->
-    <div class="section-container" id="crypto-locker">
-        <div class="tool-title">🔑 Local String Cryptography Locker</div>
-        <div class="tool-subtitle">Mask configuration characters locally inside browser memory grids securely.</div>
-        <textarea id="cryptoInput" rows="3" placeholder="Enter sensitive notes to hide..."></textarea>
+    <div class="module-box" id="crypto-box">
+        <div class="module-title">🔑 Local Encryption Cipher Sandbox</div>
+        <div class="module-subtitle">Lock configuration strings completely offline inside your hardware thread.</div>
+        <textarea id="secretInput" rows="3" placeholder="Enter secure records to mask..."></textarea>
+        <input type="number" id="secretPin" value="4" placeholder="Encryption shift key code numeric value...">
+        <div style="display: flex; gap: 10px;">
+            <button class="run-btn" onclick="cipherLogic('lock')" style="margin-top:0;">Lock Matrix</button>
+            <button class="run-btn" onclick="cipherLogic('unlock')" style="margin-top:0; background:rgba(255,255,255,0.05); color:var(--text-main);">Unlock Matrix</button>
+        </div>
+        <div class="output-panel" id="cryptoStatus">Cipher engine standby.</div>
+    </div>
+
+    <!-- MODULE 3: FILTERS STUDIO -->
+    <div class="module-box" id="image-studio">
+        <div class="module-title">🖼️ Native Photo Filter Matrix Studio</div>
+        <div class="module-subtitle">Apply core lighting matrix edits to source files right inside local canvas frames.</div>
+        <input type="file" id="imageFileInput" accept="image/*">
+        <select id="filterSelectorField">
+            <option value="none">Default Filter</option>
+            <option value="grayscale(100%)">Classic Monochrome (Black & White)</option>
+            <option value="contrast(180%)">High-Contrast Graphic Pop</option>
+            <option value="invert(100%)">Negative Photographic Film Matrix</option>
+        </select>
+        <button class="run-btn" onclick="executeLocalCanvasFilter()">Render Image Canvas</button>
+        <div class="output-panel" id="imageStatus">Ready for image attachment link.</div>
+        <center><img id="imageOutputPreview" class="preview-img" alt="Canvas Output Display Frame"></center>
+    </div>
+
+    <!-- MODULE 4: PHOTO CONVERTER -->
+    <div class="module-box" id="converter">
+        <div class="module-title">🔄 Instant File Extension Reformat</div>
+        <div class="module-subtitle">Mutate raw files seamlessly without resolution compression drops.</div>
+        <input type="file" id="convertFileInput" accept="image/*">
+        <select id="convertFormatOption">
+            <option value="image/jpeg">Export to standard JPEG (.jpg)</option>
+            <option value="image/png">Export to lossless PNG (.png)</option>
+        </select>
+        <button class="run-btn" onclick="executeLocalFormatConversion()">Convert & Download Image</button>
+        <div class="output-panel" id="convertStatus">System listening. Ready for input array.</div>
+    </div>
