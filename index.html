@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ultimate 24/7 Web Utility Suite</title>
+    <!-- Free Libraries for Background Removal and PDF Generation -->
+    <script src="https://cloudflare.com"></script>
+    <script src="https://jsdelivr.net"></script>
+    <style>
+        body { font-family: 'Segoe UI', Arial, sans-serif; background-color: #121212; color: #e0e0e0; margin: 0; padding: 20px; }
+        .container { max-width: 1000px; margin: auto; }
+        h1 { text-align: center; color: #00adb5; margin-bottom: 30px; }
+        .grid { display: grid; grid-template-columns: 1fr; gap: 30px; }
+        .tool-card { background: #1e1e1e; border: 1px solid #333; border-radius: 8px; padding: 25px; box-shadow: 0 4px 10px rgba(0,0,0,0.4); }
+        h2 { color: #00adb5; margin-top: 0; border-bottom: 1px solid #333; padding-bottom: 10px; font-size: 1.4rem; }
+        label { display: block; margin: 10px 0 5px; font-weight: bold; font-size: 0.9rem; }
+        input, textarea, select { width: 100%; background: #2d2d2d; color: #fff; border: 1px solid #444; border-radius: 4px; padding: 12px; box-sizing: border-box; font-family: inherit; margin-bottom: 15px; }
+        button { background: #00adb5; color: #fff; border: none; border-radius: 4px; padding: 12px; cursor: pointer; font-weight: bold; width: 100%; transition: background 0.2s; font-size: 1rem; }
+        button:hover { background: #007c82; }
+        .status { background: #252525; padding: 12px; border-radius: 4px; margin-top: 15px; border-left: 4px solid #00adb5; font-size: 0.9rem; text-align: center; }
+        img { max-width: 100%; max-height: 300px; border-radius: 4px; margin-top: 15px; display: none; }
+        #cv-preview { background: white; color: #333; padding: 30px; border-radius: 4px; margin-top: 20px; box-sizing: border-box; }
+        #cv-preview h3 { margin: 0 0 5px 0; color: #00adb5; border-bottom: 2px solid #00adb5; padding-bottom: 5px; text-transform: uppercase; }
+        #cv-preview p { margin: 5px 0 15px 0; line-height: 1.5; font-size: 0.95rem; white-space: pre-line; }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h1>24/7 Media & Document Automation Studio</h1>
+    
+    <div class="grid">
+        <!-- TOOL 1: BG REMOVER -->
+        <div class="tool-card">
+            <h2>🖼️ AI Background Remover</h2>
+            <p style="font-size: 0.85rem; color: #aaa;">Processing happens inside your browser. First run may take a moment to load the module.</p>
+            <input type="file" id="bgInput" accept="image/*">
+            <button onclick="removeBackground()">Erase Background</button>
+            <div class="status" id="bgStatus">Upload an image and click process...</div>
+            <center><img id="bgOutputImg" alt="Result"></center>
+        </div>
+
+        <!-- TOOL 2: PHOTO CONVERTER -->
+        <div class="tool-card">
+            <h2>🔄 Instant Photo Format Converter</h2>
+            <input type="file" id="convertInput" accept="image/*">
+            <label>Target Format:</label>
+            <select id="targetFormat">
+                <option value="image/jpeg">Convert to JPG</option>
+                <option value="image/png">Convert to PNG</option>
+                <option value="image/webp">Convert to WebP</option>
+            </select>
+            <button onclick="convertPhoto()">Convert & Download</button>
+            <div class="status" id="convertStatus">Select an image, pick a format, and export.</div>
+        </div>
+
+        <!-- TOOL 3: CV MAKER -->
+        <div class="tool-card">
+            <h2>📄 Professional CV / Resume Builder</h2>
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
+                <div>
+                    <label>Full Name</label>
+                    <input type="text" id="cvName" placeholder="John Doe" oninput="updateCV()">
+                    <label>Email & Phone</label>
+                    <input type="text" id="cvContact" placeholder="john@example.com | +123456" oninput="updateCV()">
+                </div>
+                <div>
+                    <label>Professional Title</label>
+                    <input type="text" id="cvTitle" placeholder="Software Engineer" oninput="updateCV()">
+                    <label>Skills (Comma Separated)</label>
+                    <input type="text" id="cvSkills" placeholder="HTML, CSS, JavaScript" oninput="updateCV()">
+                </div>
+            </div>
+            <label>Work Experience</label>
+            <textarea id="cvExperience" rows="4" placeholder="Describe your responsibilities..." oninput="updateCV()"></textarea>
+            <button onclick="downloadCV()" style="background: #28a745;">Download Resume PDF</button>
+            
+            <label style="margin-top:20px; color:#00adb5;">Live Document Preview:</label>
+            <div id="cv-preview">
+                <h1 id="pName" style="color:#222; text-align:left; margin:0;">YOUR NAME</h1>
+                <p id="pTitle" style="font-weight:bold; color:#555; margin:5px 0 15px 0;">Professional Title</p>
+                <p id="pContact" style="font-size:0.85rem; color:#777; margin-bottom:20px;">Contact Information</p>
+                <h3>Professional Summary & Skills</h3>
+                <p id="pSkills">Your skills listing will populate here...</p>
+                <h3>Work History</h3>
+                <p id="pExperience">Your chronological job details...</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    async function removeBackground() {
+        const fileInput = document.getElementById('bgInput');
+        const status = document.getElementById('bgStatus');
+        const outputImg = document.getElementById('bgOutputImg');
+        if (!fileInput.files[0]) { status.innerText = "⚠️ Please upload an image file first."; return; }
+        status.innerText = "⏳ Running browser AI engine... Please wait...";
+        try {
+            const imageBlob = await imglyBackgroundRemoval(fileInput.files[0]);
+            const url = URL.createObjectURL(imageBlob);
+            outputImg.src = url; outputImg.style.display = "block";
+            status.innerHTML = `<a href="${url}" download="bg_removed.png" style="color:#00adb5; font-weight:bold; text-decoration:none;">✅ Success! Click here to download image</a>`;
+        } catch (error) { status.innerText = "❌ Error processing. Try a different browser image."; }
+    }
+
+    function convertPhoto() {
+        const fileInput = document.getElementById('convertInput');
+        const format = document.getElementById('targetFormat').value;
+        const status = document.getElementById('convertStatus');
+        if (!fileInput.files[0]) { status.innerText = "⚠️ Select a photo source first."; return; }
+        status.innerText = "Processing canvas conversion...";
+        const reader = new FileReader();
+        reader.onload = function(event) {
+            const img = new Image();
+            img.onload = function() {
+                const canvas = document.createElement('canvas');
+                canvas.width = img.width; canvas.height = img.height;
+                const ctx = canvas.getContext('2d'); ctx.drawImage(img, 0, 0);
+                const dataUrl = canvas.toDataURL(format);
+                const link = document.createElement('a');
+                link.download = `converted_image.${format.split('/')[1]}`;
+                link.href = dataUrl; link.click();
+                status.innerText = "✅ Download started successfully!";
+            }
+            img.src = event.target.result;
+        }
+        reader.readAsDataURL(fileInput.files[0]);
+    }
+
+    function updateCV() {
+        document.getElementById('pName').innerText = document.getElementById('cvName').value || "YOUR NAME";
+        document.getElementById('pTitle').innerText = document.getElementById('cvTitle').value || "Professional Title";
+        document.getElementById('pContact').innerText = document.getElementById('cvContact').value || "Contact Information";
+        document.getElementById('pSkills').innerText = document.getElementById('cvSkills').value || "Your skills listing will populate here...";
+        document.getElementById('pExperience').innerText = document.getElementById('cvExperience').value || "Your chronological job details...";
+    }
+
+    function downloadCV() {
+        const element = document.getElementById('cv-preview');
+        const name = document.getElementById('cvName').value || "Resume";
+        const opt = { margin: 10, filename: `${name.replace(/\s+/g, '_')}_CV.pdf`, image: { type: 'jpeg', quality: 0.98 }, html2canvas: { scale: 2 }, jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' } };
+        html2pdf().set(opt).from(element).save();
+    }
+</script>
+</body>
+</html>
