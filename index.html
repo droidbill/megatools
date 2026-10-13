@@ -5,13 +5,11 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>MegaTools | Free AI Background Remover, Image Converter & CV Builder</title>
     
-    <!-- Production SEO Metadata -->
     <meta name="description" content="MegaTools by Droidbill is an open-source, 100% free minimalist web utility suite. Instantly erase image backgrounds, convert photo configurations, generate QR codes, analyze text layouts, and build ATS-friendly resumes securely in your browser.">
     <meta name="keywords" content="free background remover, online image converter, online qr code generator, free cv maker, ats resume builder, minimalist pomodoro timer, text analyzer, text case changer, droidbill megatools">
     <meta name="robots" content="index, follow">
     <link rel="canonical" href="https://github.io">
 
-    <!-- Fonts & Third-Party Vector Execution Engines -->
     <link href="https://googleapis.com" rel="stylesheet">
     <script src="https://cloudflare.com"></script>
     <script src="https://cloudflare.com"></script>
@@ -19,7 +17,6 @@
     <script src="https://cloudflare.com"></script>
     
     <style>
-        /* Design Variables Architecture */
         :root {
             --primary: #00adb5;
             --primary-glow: rgba(0, 173, 181, 0.4);
@@ -34,7 +31,6 @@
             --cv-shadow: rgba(0,0,0,0.5);
         }
 
-        /* Light Mode Variable Adaptations */
         [data-theme="light"] {
             --bg-dark: #f8fafc;
             --text-main: #0f172a;
@@ -109,7 +105,6 @@
         #qrcode-view { display: flex; justify-content: center; margin-top: 20px; padding: 15px; background: white; width: 170px; margin-left: auto; margin-right: auto; border-radius: 8px; }
         .timer-numeric { font-size: 4rem; font-weight: 300; text-align: center; margin: 20px 0; letter-spacing: -2px; }
 
-        /* CV Premium Render Output Window Setup */
         #cv-container { background: #ffffff; color: #1a202c; padding: 50px; border-radius: 8px; margin-top: 30px; box-shadow: 0 30px 60px var(--cv-shadow); max-width: 100%; }
         .cv-identity h1 { font-size: 2.2rem; font-weight: 700; margin: 0; color: #1a202c; letter-spacing: -1px; text-align: left; }
         .cv-identity .role { font-size: 0.95rem; text-transform: uppercase; color: #00adb5; font-weight: 600; margin-top: 5px; letter-spacing: 1px; }
@@ -129,7 +124,6 @@
         <button class="theme-toggle" onclick="toggleThemeLayout()">🌓 TOGGLE INTERFACE</button>
     </nav>
 
-    <!-- ASSISTANT QUESTION ROUTER LAYER -->
     <div class="assistant-box">
         <h2>What protocol are we executing today?</h2>
         <div class="options-row">
@@ -156,5 +150,8 @@
         <div class="status-node" id="analyzerStatus">Words: 0 | Characters: 0 | Est. Reading Time: 0s</div>
     </div>
 
+    <!-- MODULE 2: CRYPTO LOCKER -->
     <div class="section-container" id="crypto-locker">
         <div class="tool-title">🔑 Local String Cryptography Locker</div>
+        <div class="tool-subtitle">Mask configuration characters locally inside browser memory grids securely.</div>
+        <textarea id="cryptoInput" rows="3" placeholder="Enter sensitive notes to hide..."></textarea>
