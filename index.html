@@ -3,210 +3,177 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>MegaTools 3D | Premium Browser Suite</title>
-    <!-- Fonts & Free Libraries (Three.js handles the 3D graphics) -->
+    <title>Droidbill MegaTools | 3D Studio</title>
+    <!-- Premium Fonts & Scripts -->
     <link href="https://googleapis.com" rel="stylesheet">
     <script src="https://cloudflare.com"></script>
     <script src="https://cloudflare.com"></script>
     <script src="https://jsdelivr.net"></script>
+    <script src="https://cloudflare.com"></script>
     
     <style>
         :root {
             --primary: #00adb5;
-            --primary-hover: #00cad3;
+            --primary-glow: rgba(0, 173, 181, 0.4);
+            --bg-dark: #03050a;
             --text-main: #f3f4f6;
-            --text-muted: #9ca3af;
-            --glass-bg: rgba(21, 29, 48, 0.65);
-            --glass-border: rgba(255, 255, 255, 0.08);
+            --text-muted: #64748b;
+            --glass: rgba(255, 255, 255, 0.02);
+            --glass-border: rgba(255, 255, 255, 0.04);
         }
 
-        * { box-sizing: border-box; transition: all 0.2s ease-in-out; }
+        * { box-sizing: border-box; transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1); }
 
         body, html { 
-            font-family: 'Plus Jakarta Sans', Arial, sans-serif; 
-            background-color: #05070f; 
+            font-family: 'Space Grotesk', sans-serif; 
+            background-color: var(--bg-dark); 
             color: var(--text-main); 
-            margin: 0; 
-            padding: 0;
+            margin: 0; padding: 0;
             overflow-x: hidden;
-            height: 100%;
+            scroll-behavior: smooth;
         }
 
-        /* 3D Canvas Fixed in the Background */
-        #canvas3d {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100vw;
-            height: 100vh;
-            z-index: 1;
-            pointer-events: none;
-        }
+        /* Fixed 3D Geometric Background */
+        #canvas3d { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; z-index: 1; pointer-events: none; }
 
-        /* Content layer sits cleanly on top of 3D matrix */
-        .content-layer {
-            position: relative;
-            z-index: 2;
-            max-width: 1100px;
-            margin: auto;
-            padding: 60px 20px;
-        }
+        .wrapper { position: relative; z-index: 2; max-width: 900px; margin: auto; padding: 40px 20px; }
         
-        header { text-align: center; margin-bottom: 60px; }
-        header h1 { font-size: 2.8rem; font-weight: 700; color: #fff; margin: 0 0 10px 0; letter-spacing: -1px; }
-        header h1 span { color: var(--primary); text-shadow: 0 0 20px rgba(0, 173, 181, 0.4); }
-        header p { color: var(--text-muted); font-size: 1.1rem; margin: 0; }
+        /* Navigation & Logo */
+        nav { display: flex; justify-content: space-between; align-items: center; margin-bottom: 60px; padding-bottom: 20px; border-bottom: 1px solid var(--glass-border); }
+        .logo { font-weight: 700; font-size: 1.1rem; letter-spacing: 2px; color: #fff; display: flex; align-items: center; gap: 8px; }
+        .logo span { color: var(--primary); }
 
-        .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 40px; }
-        
-        /* Frosted Glass UI Effect */
-        .tool-card { 
-            background: var(--glass-bg); 
-            backdrop-filter: blur(16px);
-            -webkit-backdrop-filter: blur(16px);
-            border: 1px solid var(--glass-border); 
-            border-radius: 24px; 
-            padding: 35px; 
-            box-shadow: 0 20px 40px rgba(0,0,0,0.5); 
-            display: flex;
-            flex-direction: column;
+        /* Onboarding Interaction Section */
+        .assistant-box {
+            background: rgba(255,255,255,0.01);
+            border: 1px solid var(--glass-border);
+            border-radius: 20px;
+            padding: 30px;
+            margin-bottom: 60px;
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
         }
-        .tool-card:hover { 
-            transform: translateY(-8px); 
-            border-color: rgba(0, 173, 181, 0.4); 
-            box-shadow: 0 25px 45px rgba(0, 173, 181, 0.1); 
-        }
-
-        h2 { color: #fff; margin-top: 0; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 15px; font-size: 1.3rem; }
-        p.tool-desc { font-size: 0.85rem; color: var(--text-muted); margin-top: -5px; margin-bottom: 25px; }
-        label { display: block; margin: 15px 0 8px; font-weight: 600; font-size: 0.8rem; color: var(--text-muted); text-transform: uppercase; letter-spacing: 1px; }
-        
-        input[type="text"], textarea, select { 
-            width: 100%; 
-            background: rgba(0, 0, 0, 0.3); 
-            color: #fff; 
-            border: 1px solid var(--glass-border); 
-            border-radius: 12px; 
-            padding: 14px; 
-            font-size: 0.95rem;
-            font-family: inherit;
-        }
-        input:focus, textarea:focus, select:focus { outline: none; border-color: var(--primary); background: rgba(0,0,0,0.5); }
-        
-        input[type="file"] {
-            padding: 12px;
-            background: rgba(255,255,255,0.02);
-            border-radius: 12px;
-            border: 1px dashed var(--glass-border);
-            color: var(--text-muted);
-            margin-bottom: 15px;
+        .assistant-box h2 { font-size: 1.3rem; font-weight: 500; margin-top: 0; color: #fff; margin-bottom: 15px; }
+        .options-row { display: flex; flex-wrap: wrap; gap: 12px; }
+        .opt-btn {
+            background: rgba(255,255,255,0.03);
+            border: 1px solid var(--glass-border);
+            color: #fff;
+            padding: 12px 20px;
+            border-radius: 30px;
             cursor: pointer;
-            width: 100%;
+            font-family: inherit;
+            font-weight: 500;
+            font-size: 0.9rem;
+        }
+        .opt-btn:hover { background: var(--primary); border-color: var(--primary); box-shadow: 0 0 20px var(--primary-glow); transform: translateY(-2px); }
+
+        /* Minimalist Sections */
+        .section-container { margin-bottom: 80px; opacity: 1; }
+        .section-container.highlight { animation: flashGlow 1.5s ease-out; }
+
+        @keyframes flashGlow {
+            0% { border-color: var(--primary); box-shadow: 0 0 30px var(--primary-glow); transform: scale(1.02); }
+            100% { border-color: var(--glass-border); box-shadow: none; transform: scale(1); }
         }
 
-        button { 
-            background: var(--primary); 
-            color: #fff; 
-            border: none; 
-            border-radius: 12px; 
-            padding: 15px; 
-            cursor: pointer; 
-            font-weight: 600; 
-            font-size: 1rem;
-            box-shadow: 0 4px 15px rgba(0, 173, 181, 0.2);
-            margin-top: auto;
-        }
-        button:hover { background: var(--primary-hover); transform: translateY(-2px); box-shadow: 0 6px 20px rgba(0, 173, 181, 0.4); }
-        .btn-success { background: #28a745; box-shadow: 0 4px 15px rgba(40, 167, 69, 0.2); }
-        .btn-success:hover { background: #218838; box-shadow: 0 6px 20px rgba(40, 167, 69, 0.4); }
+        .tool-title { font-size: 1.5rem; font-weight: 600; color: #fff; margin-bottom: 5px; display: flex; align-items: center; gap: 10px; }
+        .tool-subtitle { font-size: 0.9rem; color: var(--text-muted); margin-bottom: 25px; font-weight: 300; }
 
-        .status { background: rgba(0, 0, 0, 0.4); padding: 14px; border-radius: 10px; margin-top: 20px; border-left: 4px solid var(--primary); font-size: 0.85rem; text-align: center; color: var(--text-muted); }
-        img { max-width: 100%; max-height: 220px; border-radius: 12px; margin-top: 20px; display: none; box-shadow: 0 10px 25px rgba(0,0,0,0.6); }
+        /* Clean Inputs */
+        input[type="text"], input[type="number"], textarea, select {
+            width: 100%; background: rgba(255,255,255,0.01); color: #fff;
+            border: 1px solid var(--glass-border); border-radius: 12px;
+            padding: 16px; font-size: 1rem; font-family: inherit; margin-bottom: 20px;
+        }
+        input:focus, textarea:focus, select:focus { outline: none; border-color: var(--primary); background: rgba(255,255,255,0.03); }
+        input[type="file"] { padding: 14px; background: rgba(255,255,255,0.01); border: 1px dashed var(--glass-border); border-radius: 12px; cursor: pointer; width: 100%; color: var(--text-muted); }
+
+        button.action-btn {
+            background: #fff; color: #000; border: none; border-radius: 12px;
+            padding: 16px; cursor: pointer; font-weight: 600; font-size: 1rem; width: 100%;
+            font-family: inherit; margin-top: 10px;
+        }
+        button.action-btn:hover { background: var(--primary); color: #fff; box-shadow: 0 10px 25px var(--primary-glow); transform: translateY(-2px); }
+
+        .status-node { background: rgba(0,0,0,0.2); padding: 14px; border-radius: 10px; margin-top: 20px; text-align: center; font-size: 0.9rem; border-left: 3px solid var(--primary); color: var(--text-muted); }
+        img.output-view { max-width: 100%; max-height: 250px; border-radius: 12px; margin-top: 20px; display: none; }
         
-        #cv-preview { background: #ffffff; color: #1f2937; padding: 40px; border-radius: 16px; margin-top: 25px; box-shadow: 0 15px 40px rgba(0,0,0,0.4); }
-        #cv-preview h1 { font-size: 2.2rem; margin: 0; color: #111827; text-align: left; }
-        #cv-preview p.subtitle { font-weight: 600; color: var(--primary); font-size: 1.1rem; margin: 5px 0; text-transform: uppercase; }
-        #cv-preview p.contact-info { font-size: 0.85rem; color: #6b7280; margin-bottom: 25px; border-bottom: 1px solid #e5e7eb; padding-bottom: 15px; }
-        #cv-preview h3 { margin: 25px 0 10px 0; color: #111827; font-size: 1.1rem; text-transform: uppercase; display: flex; align-items: center; }
-        #cv-preview h3::after { content: ''; flex: 1; margin-left: 15px; height: 1px; background: #e5e7eb; }
-        #cv-preview p.body-text { margin: 5px 0 0 0; line-height: 1.6; font-size: 0.95rem; color: #374151; white-space: pre-line; }
+        #qrcode-view { display: flex; justify-content: center; margin-top: 20px; }
+        .timer-numeric { font-size: 4rem; font-weight: 300; text-align: center; color: #fff; margin: 20px 0; letter-spacing: -2px; }
+
+        /* ATS Ultra-Minimal Premium CV Preview */
+        #cv-container { background: #ffffff; color: #1a202c; padding: 50px; border-radius: 4px; margin-top: 30px; box-shadow: 0 30px 60px rgba(0,0,0,0.4); max-width: 100%; }
+        .cv-identity h1 { font-size: 2.4rem; font-weight: 700; margin: 0; color: #1a202c; letter-spacing: -1px; }
+        .cv-identity .role { font-size: 1rem; text-transform: uppercase; color: var(--primary); font-weight: 600; margin-top: 5px; letter-spacing: 1px; }
+        .cv-identity .meta { font-size: 0.85rem; color: #718096; margin-top: 5px; border-bottom: 1px solid #e2e8f0; padding-bottom: 20px; }
+        .cv-block { margin-top: 25px; }
+        .cv-block h4 { font-size: 0.9rem; text-transform: uppercase; letter-spacing: 2px; color: #1a202c; margin: 0 0 8px 0; font-weight: 700; }
+        .cv-block p { margin: 0; line-height: 1.6; color: #4a5568; font-size: 0.95rem; white-space: pre-line; }
     </style>
 </head>
 <body>
 
-<!-- This canvas element holds the 3D graphics view -->
 <canvas id="canvas3d"></canvas>
 
-<div class="content-layer">
-    <header>
-        <h1>⚡ Mega<span>Tools 3D</span></h1>
-        <p>Clean, serverless utility components floating in interactive deep space</p>
-    </header>
-    
-    <div class="grid">
-        <!-- TOOL 1: BG REMOVER -->
-        <div class="tool-card">
-            <h2>🖼️ AI Background Remover</h2>
-            <p class="tool-desc">Uses local browser mechanics to drop background imagery securely.</p>
-            <label>Upload File</label>
-            <input type="file" id="bgInput" accept="image/*">
-            <button onclick="removeBackground()">Erase Background</button>
-            <div class="status" id="bgStatus">Awaiting engine file...</div>
-            <center><img id="bgOutputImg" alt="Result Space"></center>
-        </div>
+<div class="wrapper">
+    <nav>
+        <div class="logo">🤖 DROIDBILL <span>// MT</span></div>
+        <div style="font-size: 0.85rem; color: var(--text-muted);">V2.0 BUILD</div>
+    </nav>
 
-        <!-- TOOL 2: PHOTO CONVERTER -->
-        <div class="tool-card">
-            <h2>🔄 Smart Format Converter</h2>
-            <p class="tool-desc">Reformat local asset extensions seamlessly right in browser memory.</p>
-            <label>Upload Asset</label>
-            <input type="file" id="convertInput" accept="image/*">
-            <label>Format</label>
-            <select id="targetFormat">
-                <option value="image/jpeg">Convert to JPG (.jpeg)</option>
-                <option value="image/png">Convert to PNG (.png)</option>
-                <option value="image/webp">Convert to WebP (.webp)</option>
-            </select>
-            <button onclick="convertPhoto()">Process Matrix</button>
-            <div class="status" id="convertStatus">Idle. Ready for compilation.</div>
-        </div>
-
-        <!-- TOOL 3: CV MAKER -->
-        <div class="tool-card" style="grid-column: 1 / -1;">
-            <h2>📄 Responsive CV / Resume Builder</h2>
-            <p class="tool-desc">Enter details to render an automated document template instantly to file format.</p>
-            
-            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 20px;">
-                <div>
-                    <label>Full Name</label>
-                    <input type="text" id="cvName" placeholder="John Doe" oninput="updateCV()">
-                    <label>Contact Nodes</label>
-                    <input type="text" id="cvContact" placeholder="john@example.com | +123456" oninput="updateCV()">
-                </div>
-                <div>
-                    <label>Professional Assignment</label>
-                    <input type="text" id="cvTitle" placeholder="Systems Engineer" oninput="updateCV()">
-                    <label>Skill Protocols</label>
-                    <input type="text" id="cvSkills" placeholder="HTML5, CSS3, JavaScript Architecture" oninput="updateCV()">
-                </div>
-            </div>
-            
-            <label>Chronological Work Dossier</label>
-            <textarea id="cvExperience" rows="5" placeholder="Job Title — Workspace (Year)&#10;• Orchestrated microservice networks...&#10;• Designed browser-native canvas rendering scripts..." oninput="updateCV()"></textarea>
-            
-            <button onclick="downloadCV()" class="btn-success">Download Structured PDF</button>
-            
-            <div id="cv-preview">
-                <h1 id="pName">YOUR NAME</h1>
-                <p id="pTitle" class="subtitle">Professional Title</p>
-                <p id="pContact" class="contact-info">Contact Information</p>
-                <h3>Skills Matrix</h3>
-                <p id="pSkills" class="body-text">Details will populate...</p>
-                <h3>History Blueprint</h3>
-                <p id="pExperience" class="body-text">Chronological experience log...</p>
-            </div>
+    <!-- INTERACTIVE CONFIGURATOR QUESTIONS -->
+    <div class="assistant-box">
+        <h2 id="assistant-text">What protocol are we executing today?</h2>
+        <div class="options-row" id="options-container">
+            <button class="opt-btn" onclick="routeTo('bg-remover')">Erase Photo Background</button>
+            <button class="opt-btn" onclick="routeTo('converter')">Convert Photo Formats</button>
+            <button class="opt-btn" onclick="routeTo('compressor')">Compress Image File Sizes</button>
+            <button class="opt-btn" onclick="routeTo('qr-gen')">Generate URL QR Codes</button>
+            <button class="opt-btn" onclick="routeTo('pomodoro')">Launch Pomodoro Focus Timer</button>
+            <button class="opt-btn" onclick="routeTo('cv-builder')">Build a Minimalist CV</button>
         </div>
     </div>
-</div>
 
-<script>
+    <!-- UTILITY MODULES -->
+    <div class="section-container" id="bg-remover">
+        <div class="tool-title">🖼️ Background Extraction</div>
+        <div class="tool-subtitle">Isolate profile elements instantly via native client models.</div>
+        <input type="file" id="bgInput" accept="image/*">
+        <button class="action-btn" onclick="removeBackground()">Run Clear Engine</button>
+        <div class="status-node" id="bgStatus">Matrix standby.</div>
+        <center><img id="bgOutputImg" class="output-view" alt="Result Target"></center>
+    </div>
+
+    <div class="section-container" id="converter">
+        <div class="tool-title">🔄 Extension Formatting Matrix</div>
+        <div class="tool-subtitle">Mutate image wrappers without data loss.</div>
+        <input type="file" id="convertInput" accept="image/*">
+        <select id="targetFormat">
+            <option value="image/jpeg">Reformat to JPEG</option>
+            <option value="image/png">Reformat to PNG</option>
+            <option value="image/webp">Reformat to WebP</option>
+        </select>
+        <button class="action-btn" onclick="convertPhoto()">Execute Reformat</button>
+        <div class="status-node" id="convertStatus">Awaiting asset payload.</div>
+    </div>
+
+    <div class="section-container" id="compressor">
+        <div class="tool-title">📐 Dimensional Scale Compressor</div>
+        <div class="tool-subtitle">Downsize geometric resolution weights smoothly.</div>
+        <input type="file" id="resizeInput" accept="image/*">
+        <input type="number" id="resizeWidth" value="1000" placeholder="Width resolution target...">
+        <button class="action-btn" onclick="resizeImage()">Compress Target File</button>
+        <div class="status-node" id="resizeStatus">Awaiting file array inputs.</div>
+    </div>
+
+    <div class="section-container" id="qr-gen">
+        <div class="tool-title">🔗 QR Vector Matrix</div>
+        <div class="tool-subtitle">Render operational text characters into physical code layouts.</div>
+        <input type="text" id="qrText" value="https://github.io" placeholder="Enter URL destination...">
+        <button class="action-btn" onclick="generateQRCode()">Compile Code Array</button>
+        <div id="qrcode-view"></div>
+    </div>
+
+    <div class="section-container" id="pomodoro">
+        <div class="tool-title">⏳ Interval Focus Loop</div>
