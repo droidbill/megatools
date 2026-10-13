@@ -11,18 +11,12 @@
     <meta name="robots" content="index, follow">
     <link rel="canonical" href="https://github.io">
 
-    <!-- Social Graphs (Open Graph Optimization) -->
-    <meta property="og:title" content="MegaTools | Free Serverless Browser Utility Suite">
-    <meta property="og:description" content="Process media files, compile structural QR matrices, manage productivity loops, and draft printable resumes securely in-browser.">
-    <meta property="og:url" content="https://github.io">
-    <meta property="og:type" content="website">
-
     <!-- Fonts & Third-Party Vector Execution Engines -->
     <link href="https://googleapis.com" rel="stylesheet">
     <script src="https://cloudflare.com"></script>
     <script src="https://cloudflare.com"></script>
     <script src="https://jsdelivr.net"></script>
-    <script src="https://jsdelivr.net"></script>
+    <script src="https://cloudflare.com"></script>
     
     <style>
         /* Design Variables Architecture */
@@ -53,7 +47,7 @@
             --cv-shadow: rgba(15,23,42,0.15);
         }
 
-        * { box-sizing: border-box; transition: background-color 0.3s, color 0.3s, border-color 0.3s; }
+        * { box-sizing: border-box; }
 
         body, html { 
             font-family: 'Space Grotesk', sans-serif; 
@@ -71,7 +65,6 @@
         .logo { font-weight: 700; font-size: 1.1rem; letter-spacing: 2px; color: var(--text-main); display: flex; align-items: center; gap: 8px; }
         .logo span { color: var(--primary); }
 
-        /* Theme Toggle Interface Node */
         .theme-toggle {
             background: var(--glass); border: 1px solid var(--glass-border); color: var(--text-main);
             padding: 10px 16px; border-radius: 30px; cursor: pointer; font-family: inherit; font-size: 0.85rem; font-weight: 600;
@@ -92,12 +85,7 @@
         .opt-btn:hover { background: var(--primary); border-color: var(--primary); color: #fff; box-shadow: 0 0 20px var(--primary-glow); transform: translateY(-2px); }
 
         .section-container { margin-bottom: 80px; padding: 25px; border-radius: 16px; border: 1px solid var(--glass-border); background: var(--glass); backdrop-filter: blur(5px); }
-        .section-container.highlight { animation: flashGlow 1.5s ease-out; }
-
-        @keyframes flashGlow {
-            0% { border-color: var(--primary); box-shadow: 0 0 30px var(--primary-glow); }
-            100% { border-color: var(--glass-border); box-shadow: none; }
-        }
+        .section-container.highlight { border-color: var(--primary); box-shadow: 0 0 20px var(--primary-glow); }
 
         .tool-title { font-size: 1.4rem; font-weight: 600; margin-bottom: 5px; }
         .tool-subtitle { font-size: 0.85rem; color: var(--text-muted); margin-bottom: 25px; font-weight: 300; }
@@ -156,6 +144,17 @@
         </div>
     </div>
 
-    <!-- UTILITY MODULES -->
+    <!-- MODULE 1: TEXT CLEANER -->
     <div class="section-container" id="text-cleaner">
         <div class="tool-title">🧹 Text Case Cleaner & Word Analyzer</div>
+        <div class="tool-subtitle">Format capitalization syntax layouts and monitor production word count tracking metrics.</div>
+        <textarea id="analyzerInput" rows="4" placeholder="Paste target layout text elements here..." oninput="analyzeText()"></textarea>
+        <div style="display: flex; gap: 10px; margin-bottom: 15px;">
+            <button class="action-btn" onclick="changeTextCase('upper')" style="margin-top:0;">UPPERCASE</button>
+            <button class="action-btn" onclick="changeTextCase('lower')" style="margin-top:0;">lowercase</button>
+        </div>
+        <div class="status-node" id="analyzerStatus">Words: 0 | Characters: 0 | Est. Reading Time: 0s</div>
+    </div>
+
+    <div class="section-container" id="crypto-locker">
+        <div class="tool-title">🔑 Local String Cryptography Locker</div>
