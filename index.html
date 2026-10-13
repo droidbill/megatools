@@ -3,197 +3,210 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>MegaTools | 24/7 Media & Document Automation Studio</title>
-    <!-- Google Fonts & Icons -->
+    <title>MegaTools 3D | Premium Browser Suite</title>
+    <!-- Fonts & Free Libraries (Three.js handles the 3D graphics) -->
     <link href="https://googleapis.com" rel="stylesheet">
+    <script src="https://cloudflare.com"></script>
     <script src="https://cloudflare.com"></script>
     <script src="https://jsdelivr.net"></script>
     
     <style>
         :root {
-            --bg-main: #0b0f19;
-            --bg-card: #151d30;
-            --bg-input: #1e2942;
             --primary: #00adb5;
             --primary-hover: #00cad3;
-            --accent: #ff5722;
             --text-main: #f3f4f6;
             --text-muted: #9ca3af;
-            --border: #263554;
+            --glass-bg: rgba(21, 29, 48, 0.65);
+            --glass-border: rgba(255, 255, 255, 0.08);
         }
 
         * { box-sizing: border-box; transition: all 0.2s ease-in-out; }
 
-        body { 
+        body, html { 
             font-family: 'Plus Jakarta Sans', Arial, sans-serif; 
-            background-color: var(--bg-main); 
+            background-color: #05070f; 
             color: var(--text-main); 
             margin: 0; 
-            padding: 40px 20px;
-            line-height: 1.5;
+            padding: 0;
+            overflow-x: hidden;
+            height: 100%;
         }
 
-        .container { max-width: 1100px; margin: auto; }
+        /* 3D Canvas Fixed in the Background */
+        #canvas3d {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            z-index: 1;
+            pointer-events: none;
+        }
+
+        /* Content layer sits cleanly on top of 3D matrix */
+        .content-layer {
+            position: relative;
+            z-index: 2;
+            max-width: 1100px;
+            margin: auto;
+            padding: 60px 20px;
+        }
         
-        header { text-align: center; margin-bottom: 50px; }
-        header h1 { font-size: 2.5rem; font-weight: 700; color: #fff; margin-bottom: 10px; letter-spacing: -0.5px; }
-        header h1 span { color: var(--primary); }
+        header { text-align: center; margin-bottom: 60px; }
+        header h1 { font-size: 2.8rem; font-weight: 700; color: #fff; margin: 0 0 10px 0; letter-spacing: -1px; }
+        header h1 span { color: var(--primary); text-shadow: 0 0 20px rgba(0, 173, 181, 0.4); }
         header p { color: var(--text-muted); font-size: 1.1rem; margin: 0; }
 
-        .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 30px; }
+        .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 40px; }
         
+        /* Frosted Glass UI Effect */
         .tool-card { 
-            background: var(--bg-card); 
-            border: 1px solid var(--border); 
-            border-radius: 16px; 
-            padding: 30px; 
-            box-shadow: 0 10px 25px rgba(0,0,0,0.3); 
+            background: var(--glass-bg); 
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid var(--glass-border); 
+            border-radius: 24px; 
+            padding: 35px; 
+            box-shadow: 0 20px 40px rgba(0,0,0,0.5); 
             display: flex;
             flex-direction: column;
         }
-        .tool-card:hover { transform: translateY(-5px); border-color: var(--primary); box-shadow: 0 15px 30px rgba(0, 173, 181, 0.15); }
+        .tool-card:hover { 
+            transform: translateY(-8px); 
+            border-color: rgba(0, 173, 181, 0.4); 
+            box-shadow: 0 25px 45px rgba(0, 173, 181, 0.1); 
+        }
 
-        h2 { color: #fff; margin-top: 0; border-bottom: 2px solid var(--border); padding-bottom: 15px; font-size: 1.3rem; display: flex; align-items: center; gap: 10px; }
+        h2 { color: #fff; margin-top: 0; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 15px; font-size: 1.3rem; }
+        p.tool-desc { font-size: 0.85rem; color: var(--text-muted); margin-top: -5px; margin-bottom: 25px; }
+        label { display: block; margin: 15px 0 8px; font-weight: 600; font-size: 0.8rem; color: var(--text-muted); text-transform: uppercase; letter-spacing: 1px; }
         
-        p.tool-desc { font-size: 0.85rem; color: var(--text-muted); margin-top: -5px; margin-bottom: 20px; }
-
-        label { display: block; margin: 15px 0 8px; font-weight: 600; font-size: 0.85rem; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.5px; }
-        
-        /* Custom styled inputs */
-        input[type="text"], input[type="number"], textarea, select { 
+        input[type="text"], textarea, select { 
             width: 100%; 
-            background: var(--bg-input); 
+            background: rgba(0, 0, 0, 0.3); 
             color: #fff; 
-            border: 1px solid var(--border); 
-            border-radius: 8px; 
+            border: 1px solid var(--glass-border); 
+            border-radius: 12px; 
             padding: 14px; 
             font-size: 0.95rem;
             font-family: inherit;
         }
-        input:focus, textarea:focus, select:focus { outline: none; border-color: var(--primary); background: #222e4a; }
+        input:focus, textarea:focus, select:focus { outline: none; border-color: var(--primary); background: rgba(0,0,0,0.5); }
         
-        /* Custom file upload button appearance */
         input[type="file"] {
-            padding: 10px;
-            background: rgba(255,255,255,0.03);
-            border-radius: 8px;
-            border: 1px dashed var(--border);
+            padding: 12px;
+            background: rgba(255,255,255,0.02);
+            border-radius: 12px;
+            border: 1px dashed var(--glass-border);
             color: var(--text-muted);
             margin-bottom: 15px;
             cursor: pointer;
-            font-size: 0.9rem;
+            width: 100%;
         }
 
         button { 
             background: var(--primary); 
             color: #fff; 
             border: none; 
-            border-radius: 8px; 
-            padding: 14px; 
+            border-radius: 12px; 
+            padding: 15px; 
             cursor: pointer; 
             font-weight: 600; 
-            width: 100%; 
             font-size: 1rem;
-            box-shadow: 0 4px 12px rgba(0, 173, 181, 0.2);
+            box-shadow: 0 4px 15px rgba(0, 173, 181, 0.2);
             margin-top: auto;
         }
-        button:hover { background: var(--primary-hover); transform: translateY(-1px); box-shadow: 0 6px 16px rgba(0, 173, 181, 0.3); }
-        
-        .btn-success { background: #28a745; box-shadow: 0 4px 12px rgba(40, 167, 69, 0.2); }
-        .btn-success:hover { background: #218838; box-shadow: 0 6px 16px rgba(40, 167, 69, 0.3); }
+        button:hover { background: var(--primary-hover); transform: translateY(-2px); box-shadow: 0 6px 20px rgba(0, 173, 181, 0.4); }
+        .btn-success { background: #28a745; box-shadow: 0 4px 15px rgba(40, 167, 69, 0.2); }
+        .btn-success:hover { background: #218838; box-shadow: 0 6px 20px rgba(40, 167, 69, 0.4); }
 
-        .status { background: rgba(0, 0, 0, 0.2); padding: 14px; border-radius: 8px; margin-top: 20px; border-left: 4px solid var(--primary); font-size: 0.9rem; text-align: center; color: var(--text-muted); }
+        .status { background: rgba(0, 0, 0, 0.4); padding: 14px; border-radius: 10px; margin-top: 20px; border-left: 4px solid var(--primary); font-size: 0.85rem; text-align: center; color: var(--text-muted); }
+        img { max-width: 100%; max-height: 220px; border-radius: 12px; margin-top: 20px; display: none; box-shadow: 0 10px 25px rgba(0,0,0,0.6); }
         
-        img { max-width: 100%; max-height: 250px; border-radius: 8px; margin-top: 20px; display: none; box-shadow: 0 5px 15px rgba(0,0,0,0.5); }
-        
-        /* CV Template Preview Layout (Modern Look) */
-        #cv-preview { background: #ffffff; color: #1f2937; padding: 40px; border-radius: 12px; margin-top: 25px; box-shadow: 0 10px 30px rgba(0,0,0,0.2); }
-        #cv-preview h1 { font-size: 2.2rem; margin: 0; color: #111827; font-weight: 700; text-align: left; }
-        #cv-preview p.subtitle { font-weight: 600; color: var(--primary); font-size: 1.1rem; margin: 4px 0 8px 0; text-transform: uppercase; letter-spacing: 1px; }
+        #cv-preview { background: #ffffff; color: #1f2937; padding: 40px; border-radius: 16px; margin-top: 25px; box-shadow: 0 15px 40px rgba(0,0,0,0.4); }
+        #cv-preview h1 { font-size: 2.2rem; margin: 0; color: #111827; text-align: left; }
+        #cv-preview p.subtitle { font-weight: 600; color: var(--primary); font-size: 1.1rem; margin: 5px 0; text-transform: uppercase; }
         #cv-preview p.contact-info { font-size: 0.85rem; color: #6b7280; margin-bottom: 25px; border-bottom: 1px solid #e5e7eb; padding-bottom: 15px; }
-        #cv-preview h3 { margin: 25px 0 10px 0; color: #111827; font-size: 1.1rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; display: flex; align-items: center; }
+        #cv-preview h3 { margin: 25px 0 10px 0; color: #111827; font-size: 1.1rem; text-transform: uppercase; display: flex; align-items: center; }
         #cv-preview h3::after { content: ''; flex: 1; margin-left: 15px; height: 1px; background: #e5e7eb; }
         #cv-preview p.body-text { margin: 5px 0 0 0; line-height: 1.6; font-size: 0.95rem; color: #374151; white-space: pre-line; }
     </style>
 </head>
 <body>
 
-<div class="container">
+<!-- This canvas element holds the 3D graphics view -->
+<canvas id="canvas3d"></canvas>
+
+<div class="content-layer">
     <header>
-        <h1>🤖 Mega<span>Tools</span></h1>
-        <p>Premium serverless micro-utilities, running completely secure in your browser 24/7</p>
+        <h1>⚡ Mega<span>Tools 3D</span></h1>
+        <p>Clean, serverless utility components floating in interactive deep space</p>
     </header>
     
     <div class="grid">
         <!-- TOOL 1: BG REMOVER -->
         <div class="tool-card">
             <h2>🖼️ AI Background Remover</h2>
-            <p class="tool-desc">Uses local browser WebAssembly to strip backgrounds with zero data leaks.</p>
-            <label>Choose Image File</label>
+            <p class="tool-desc">Uses local browser mechanics to drop background imagery securely.</p>
+            <label>Upload File</label>
             <input type="file" id="bgInput" accept="image/*">
             <button onclick="removeBackground()">Erase Background</button>
-            <div class="status" id="bgStatus">Ready to clean image.</div>
-            <center><img id="bgOutputImg" alt="Result Window"></center>
+            <div class="status" id="bgStatus">Awaiting engine file...</div>
+            <center><img id="bgOutputImg" alt="Result Space"></center>
         </div>
 
         <!-- TOOL 2: PHOTO CONVERTER -->
         <div class="tool-card">
             <h2>🔄 Smart Format Converter</h2>
-            <p class="tool-desc">Convert standard image elements into alternative high-efficiency formats.</p>
-            <label>Select Photo Source</label>
+            <p class="tool-desc">Reformat local asset extensions seamlessly right in browser memory.</p>
+            <label>Upload Asset</label>
             <input type="file" id="convertInput" accept="image/*">
-            <label>Output Extensions</label>
+            <label>Format</label>
             <select id="targetFormat">
                 <option value="image/jpeg">Convert to JPG (.jpeg)</option>
                 <option value="image/png">Convert to PNG (.png)</option>
                 <option value="image/webp">Convert to WebP (.webp)</option>
             </select>
-            <button onclick="convertPhoto()">Convert & Download</button>
-            <div class="status" id="convertStatus">System ready.</div>
+            <button onclick="convertPhoto()">Process Matrix</button>
+            <div class="status" id="convertStatus">Idle. Ready for compilation.</div>
         </div>
 
-        <!-- TOOL 3: CV MAKER (Spans full width for premium builder look) -->
+        <!-- TOOL 3: CV MAKER -->
         <div class="tool-card" style="grid-column: 1 / -1;">
-            <h2>📄 Interactive CV / Resume Builder</h2>
-            <p class="tool-desc">Enter your credentials below to generate an instantly formatted, ATS-friendly A4 PDF.</p>
+            <h2>📄 Responsive CV / Resume Builder</h2>
+            <p class="tool-desc">Enter details to render an automated document template instantly to file format.</p>
             
             <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 20px;">
                 <div>
                     <label>Full Name</label>
                     <input type="text" id="cvName" placeholder="John Doe" oninput="updateCV()">
-                    <label>Email & Contact Details</label>
+                    <label>Contact Nodes</label>
                     <input type="text" id="cvContact" placeholder="john@example.com | +123456" oninput="updateCV()">
                 </div>
                 <div>
-                    <label>Target Professional Title</label>
-                    <input type="text" id="cvTitle" placeholder="Senior Software Engineer" oninput="updateCV()">
-                    <label>Core Skills & Expertise</label>
-                    <input type="text" id="cvSkills" placeholder="HTML5, Tailwind CSS, JavaScript, Git Frameworks" oninput="updateCV()">
+                    <label>Professional Assignment</label>
+                    <input type="text" id="cvTitle" placeholder="Systems Engineer" oninput="updateCV()">
+                    <label>Skill Protocols</label>
+                    <input type="text" id="cvSkills" placeholder="HTML5, CSS3, JavaScript Architecture" oninput="updateCV()">
                 </div>
             </div>
             
-            <label>Chronological Work History & Summary</label>
-            <textarea id="cvExperience" rows="5" placeholder="Job Title — Company Name (Year)&#10;• Led optimization blueprints across server builds...&#10;• Designed frontend applications..." oninput="updateCV()"></textarea>
+            <label>Chronological Work Dossier</label>
+            <textarea id="cvExperience" rows="5" placeholder="Job Title — Workspace (Year)&#10;• Orchestrated microservice networks...&#10;• Designed browser-native canvas rendering scripts..." oninput="updateCV()"></textarea>
             
-            <button onclick="downloadCV()" class="btn-success">Download Print-Ready PDF</button>
+            <button onclick="downloadCV()" class="btn-success">Download Structured PDF</button>
             
             <div id="cv-preview">
                 <h1 id="pName">YOUR NAME</h1>
                 <p id="pTitle" class="subtitle">Professional Title</p>
                 <p id="pContact" class="contact-info">Contact Information</p>
-                
-                <h3>Core Skills & Expertise</h3>
-                <p id="pSkills" class="body-text">Your skills listing will populate here...</p>
-                
-                <h3>Professional Work History</h3>
-                <p id="pExperience" class="body-text">Your chronological job details...</p>
+                <h3>Skills Matrix</h3>
+                <p id="pSkills" class="body-text">Details will populate...</p>
+                <h3>History Blueprint</h3>
+                <p id="pExperience" class="body-text">Chronological experience log...</p>
             </div>
         </div>
     </div>
 </div>
 
 <script>
-    async function removeBackground() {
-        const fileInput = document.getElementById('bgInput');
-        const status = document.getElementById('bgStatus');
-        const outputImg = document.getElementById('bgOutputImg');
